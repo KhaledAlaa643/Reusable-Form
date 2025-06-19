@@ -1,0 +1,47 @@
+<div class="container d-flex justify-content-center align-items-center w-100">
+    <form class="w-100 mt-5 p-3" [formGroup]="formGroupName" (ngSubmit)="onSubmit()">
+      @for (item of formData; track $index; let i = $index) {
+        <div [class]="item.divClass">
+          <label [for]="item.inputId">
+            <fa-icon [icon]="item.inputIcon"></fa-icon>
+            {{ item.inputTitle }}
+          </label>
+
+          @if (!item.isSelect) {
+            <input
+              [type]="item.inputType"
+              [class]="item.inputClass"
+              [id]="item.inputId"
+              [formControlName]="item.formControlName" />
+          } @else {
+            <select
+              [id]="item.inputId"
+              [formControlName]="item.formControlName"
+              [class]="item.inputClass">
+              <option value="">Select {{ item.inputTitle }}</option>
+              @for (option of item.selectOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          }
+        </div>
+      }
+      @if (isFormArray) {
+        <div [formArrayName]="formArrayItems">
+          <button type="button" (click)="addItem()" type="button">Add Item</button>
+          @for (item of items.controls; track item; let i = $index) {        
+              <div class="p-3" [formGroupName]="i">
+                @for (key of itemObjectKeys; track key) {
+                  <input
+                    [formControlName]="key"
+                    class="form-control mb-2"
+                    [placeholder]="'Enter ' + key" />
+                }              
+                <button type="button" (click)="removeItem(i)">Remove Item</button>
+              </div>
+            }
+          </div>
+      }
+      <button type="submit" [disabled]="formGroupName.invalid" class="btn btn-primary"> Submit </button> 
+    </form> 
+</div>
