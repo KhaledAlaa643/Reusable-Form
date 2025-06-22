@@ -13,6 +13,9 @@
               [class]="item.inputClass"
               [id]="item.inputId"
               [formControlName]="item.formControlName" />
+              @if (formGroupName.get(item.formControlName)?.hasError("required") && formGroupName.get(item.formControlName)?.touched){
+                <p class="alert alert-danger mt-3">The {{item.inputTitle}} cannot be empty</p>
+              }
           } @else {
             <select
               [id]="item.inputId"
@@ -35,8 +38,8 @@
                   <input
                     [formControlName]="key"
                     class="form-control mb-2"
-                    [placeholder]="'Enter ' + key" />
-                }              
+                    [placeholder]="'Enter ' + key" />           
+                  }              
                 <button type="button" (click)="removeItem(i)">Remove Item</button>
               </div>
             }
