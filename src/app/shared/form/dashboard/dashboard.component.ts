@@ -23,7 +23,7 @@ export class DashboardComponent  {
   constructor(private reusableForm:ResuableFormService){}
   loginForm!:FormGroup
   isFormArray = true; 
-
+  formArrayItems =  'hobbies' 
   itemData = {
     itemTitle: ['',Validators.required]
   }
@@ -105,9 +105,11 @@ export class DashboardComponent  {
     },
   ];
   ngOnInit() {
-    this.loginForm = this.reusableForm.initiateForm(this.formData,this.itemData,
+    this.loginForm = this.reusableForm.initiateForm(
+      this.formData,
       this.isFormArray,
-      this.isFormArray ? 'hobbies' : undefined
+      this.isFormArray ? this.formArrayItems : undefined,
+      this.itemData
     );  
   }
 }
