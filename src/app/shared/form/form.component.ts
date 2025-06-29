@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input, Input } from '@angular/core';
 import { IForm } from './models/form.interface';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -10,38 +10,28 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular
   imports:[FontAwesomeModule,ReactiveFormsModule]
 })
 export class FormComponent   {
+  formData = input.required<IForm[]>()
+  formGroupName = input.required<FormGroup>()
 
-  @Input('formData')  formData!:IForm[]
-  @Input('formGroupName')  formGroupName!:FormGroup
-  @Input ("isFormArray") isFormArray :boolean = false
-  @Input ("formArrayData") formArrayData !:FormArray
-  @Input ("itemObject") itemObject !:any
-  @Input ("formArrayItems") formArrayItems !:string
-  @Input ("options") options !:string[] | number[] | boolean[]
+  isFormArray = input<boolean>(false)
+  formArrayData = input<FormArray>()
+  itemObject = input<any>()
+  formArrayItems = input<string>() 
+  itemObjectKeys = computed(() => Object.keys(this.itemObject()));
   
-  constructor (private formBuilder:FormBuilder){
-  }
+  constructor (private formBuilder:FormBuilder){}
 
-  ngOnInit() {    
-    if (this.isFormArray){
-      this.createItem()
+  get items(): FormArray {
+    const control = this.formGroupName().get(this.formArrayItems()!);
+    if (!control || !(control instanceof FormArray)) {
+      console.warn(`No FormArray found for '${this.formArrayItems()}'`);
+      return new FormArray<any>([]);
     }
-  }
-  get items (): FormArray {    
-    return this.formGroupName.get(this.formArrayItems) as FormArray ?? new FormArray([]);
-  }
-  
-
-  get itemObjectKeys(): string[] | any{
-    if (this.isFormArray){
-      return Object.keys(this.itemObject);
-    }
+    return control;
   }
   
-  private createItem(): FormGroup | any {
-    if(this.isFormArray){
-      return this.formBuilder.group(this.itemObject)
-    }
+  private createItem(): FormGroup {
+    return this.formBuilder.group(this.itemObject());
   }
   addItem(): void {
     this.items.push(this.createItem());
@@ -50,8 +40,8 @@ export class FormComponent   {
     this.items.removeAt(index);
   }
   onSubmit(){
-    if (this.formGroupName.valid) {
-      console.log(this.formGroupName.value);
+    if (this.formGroupName().valid) {
+      console.log(this.formGroupName().value);
     }
   }
 }

@@ -13,9 +13,10 @@ export class ResuableFormService {
 constructor(private formBuilder: FormBuilder) { }
 initiateForm(
   formData: IForm[],
-  isFormArray: boolean = false,
-  formArrayName? :string | undefined,
-  itemData?: any): FormGroup {
+  isFormArray?: boolean,
+  formArrayName?: string | undefined,
+  itemData?: any
+  ): FormGroup {
 
   const group: any = {};
   formData.forEach(field => {
